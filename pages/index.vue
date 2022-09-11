@@ -19,13 +19,20 @@
       :disable-filtering="true"
       :disable-sort="true"
       loading-text="Loading... Please wait"
-      @pagination="toPage"
+      :options.sync="pagination"
       :footer-props="{
+        pagination: pagination,
         itemsPerPageOptions: [5, 10, 15, 20]
       }"
+      @pagination="toPage"
     >
       <template #[`item.volumeInfo.imageLinks.thumbnail`]="{ item }">
-        <v-img :src="item.volumeInfo.imageLinks.thumbnail" max-width="100" max-height="100" class="my-2" />
+        <v-img
+          v-if="item.volumeInfo && item.volumeInfo.imageLinks && item.volumeInfo.imageLinks.thumbnail"
+          :src="item.volumeInfo.imageLinks.thumbnail"
+          max-width="100" max-height="100"
+          class="my-2"
+        />
       </template>
       <template #[`item.volumeInfo.authors`]="{ item }">
         <v-list>
@@ -69,7 +76,15 @@ export default {
         q: 'programming',
         startIndex: 1,
         maxResults: 10
-      }
+      },
+      pagination: {
+          page: 1,
+          itemsPerPage: 10,
+          pageStart: 0,
+          pageStop: 10,
+          pageCount: 10,
+          itemsLength: 10
+        }
     }
   },
 
@@ -83,6 +98,9 @@ export default {
     onSearch (text) {
       this.query.q = text || 'programming'
       clearTimeout(this.timeout)
+      this.pagination.page = 1
+      this.pagination.pageStart = 1
+      this.query.startIndex = 1
       this.loading = true
       this.timeout = setTimeout(() => {
         this.fetchBooks()
@@ -97,6 +115,7 @@ export default {
     },
 
     toPage (pagination) {
+      this.pagination = pagination
       this.query.maxResults = pagination.itemsPerPage
       this.query.startIndex = pagination.pageStart
       this.fetchBooks()
