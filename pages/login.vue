@@ -10,8 +10,14 @@
               </v-toolbar>
               <v-card-text>
                 <v-form>
-                  <v-text-field v-model="login" name="login" label="Username-token" type="text" :maxlength="16"
-                    @focus="error = false" />
+                  <v-text-field
+                    v-model="login"
+                    name="login"
+                    label="Username-token"
+                    type="text"
+                    :maxlength="16"
+                    @focus="error = false"
+                  />
                 </v-form>
               </v-card-text>
               <v-card-actions>
